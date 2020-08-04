@@ -1,0 +1,24 @@
+{
+    "manifest_version": 2,
+    "name": "Semantic extractor from text highlights",
+    "author": "Sami",
+    "version": "0.1",
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "windows": "Ctrl+Shift+O",
+                "mac": "Command+Shift+O",
+                "chromeos": "Ctrl+Shift+O",
+                "linux": "Ctrl+Shift+O"
+            }
+        }
+    },
+    "content_scripts": [{
+        "matches": ["<all_urls>"],
+        "js": ["jquery-3.4.1.min.js","content.js"]
+    }],
+    "browser_action": {
+        "default_icon": "icon.jpg",
+        "default_popup": "extension.html"
+    }
+}
