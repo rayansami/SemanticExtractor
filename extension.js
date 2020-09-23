@@ -1,9 +1,12 @@
 let list = document.getElementById('extension-list');
 let btncount = 0;
+let isListPopulated = false;
 
 registerEvents();
 // Send the attribute to the webpage, so that it can get focus
 function focusOnWebPage(e) {
+    e = e || window.event;
+    console.log('hit focus: ',e.target)
     // Send the content to the webpage
     chrome.tabs.query({
         active: true,
@@ -56,9 +59,9 @@ function updateSenderOnDeletion(dataAttrVal) {
     });
 }
 
-function deleteOperation(e){
+function deleteOperation(e) {
     e = e || window.event;
-    
+
     // target brings up the element that's being clicked on the document
     var target = e.target || e.srcElement,
         text = target.textContent || target.innerText;
@@ -71,9 +74,46 @@ function deleteOperation(e){
     list.removeChild(target.parentNode);
 }
 
+// Access via keyboard. 
+function keyboardAcessToListItem(e) {
+    console.log('hit here');
+    $("#extension-list li:first-child").addClass('selected');
+    
+    e = e || window.event;
+    document.addEventListener("keydown",function (e) {
+        console.log(e.keyCode);
+        if (e.keyCode == 38) { // up
+            let selected = $(".selected");
+            $("#extension-list li").removeClass("selected");
+            if (selected.prev().length == 0) {
+                selected.siblings().last().addClass("selected");
+            } else {
+                selected.prev().addClass("selected");
+            }
+        }
+        if (e.keyCode == 40) { // down
+            var selected = $(".selected");
+            $("#extension-list li").removeClass("selected");
+            if (selected.next().length == 0) {
+                selected.siblings().first().addClass("selected");
+            } else {
+                selected.next().addClass("selected");
+            }
+        }
+
+        // TODO: Make ENTER usable for focusing element on webpage
+        if (e.keyCode == 13){ // enter
+            focusOnWebPage(e);
+        }
+    });
+}
+
 function registerEvents() {
     // It detects the clicked element and delete the list element if Delete button is clicked.
     document.addEventListener('click', deleteOperation, false);
+
+    // User has to click on the extension first
+    document.body.addEventListener('click', keyboardAcessToListItem);
 }
 // First-thing here
 // Wait till loading the page to initiate connection  
@@ -92,6 +132,6 @@ window.addEventListener('load', (event) => {
             let element = buildElement(response.attributes);
             // Add to the list in Extension                  
             list.append(element);
-        });
+        });        
     });
 });
