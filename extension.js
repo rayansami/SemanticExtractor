@@ -57,12 +57,17 @@ function updateSenderOnDeletion(dataAttrVal) {
 }
 
 function registerEvents() {
+    // It detects the clicked element and delete the list element if Delete button is clicked.
     document.addEventListener('click', function (e) {
         e = e || window.event;
+
+        //intiateKeyboardAccessibility(e);
+        // target brings up the element that's being clicked on the document
         var target = e.target || e.srcElement,
             text = target.textContent || target.innerText;
 
         // Pass deleted element information to the sender
+        // Delete button is placed after <a> tag that has data-attr. Thats why accessing previous sibling here            
         updateSenderOnDeletion(target.previousSibling.getAttribute('data-semanticname'));
         //console.log(target.previousSibling.getAttribute('data-semanticname'));
 
