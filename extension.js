@@ -4,8 +4,7 @@ let isListPopulated = false;
 
 registerEvents();
 // Send the attribute to the webpage, so that it can get focus
-function focusOnWebPage(e) {
-    e = e || window.event;
+function focusOnWebPage(e) {    
     console.log('hit focus: ',e.target)
     // Send the content to the webpage
     chrome.tabs.query({
@@ -69,7 +68,6 @@ function deleteOperation(e) {
     // Pass deleted element information to the sender
     // Delete button is placed after <a> tag that has data-attr. Thats why accessing previous sibling here            
     updateSenderOnDeletion(target.previousSibling.getAttribute('data-semanticname'));
-    //console.log(target.previousSibling.getAttribute('data-semanticname'));
 
     list.removeChild(target.parentNode);
 }
@@ -99,13 +97,17 @@ function keyboardAcessToListItem(e) {
             } else {
                 selected.next().addClass("selected");
             }
-        }
-
-        // TODO: Make ENTER usable for focusing element on webpage
+        }        
+        // Enter simulates click to focus the element on the webpage2
         if (e.keyCode == 13){ // enter
-            focusOnWebPage(e);
+            simulateClickEventOnExtensionList();
         }
     });
+}
+
+function simulateClickEventOnExtensionList(){
+    let selected = $(".selected a");
+    selected.trigger('click');
 }
 
 function registerEvents() {
@@ -113,11 +115,20 @@ function registerEvents() {
     document.addEventListener('click', deleteOperation, false);
 
     // User has to click on the extension first
-    document.body.addEventListener('click', keyboardAcessToListItem);
+    document.addEventListener('click', keyboardAcessToListItem);
+    
+    //TODO: Currently not working. 'Selected' should change on mouse hover in list items on extension. Need to set it after list load. Investigation needed    
+    $("#extension-list li").mouseover(function() {
+        $("#extension-list li").removeClass("selected");
+        $(this).addClass("selected");
+    }).click(function() {
+        simulateClickEventOnExtensionList();
+    });
 }
+
 // First-thing here
 // Wait till loading the page to initiate connection  
-window.addEventListener('load', (event) => {
+window.addEventListener('load', (event) => {    
     chrome.tabs.query({
         active: true,
         currentWindow: true
