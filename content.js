@@ -1,7 +1,9 @@
 let semanticExtractor = function () {
     let nameCount = 0;
     let trackDeletedDataAttr = []; // store the information(data-semantic-value) of deleted element
-    // List of semantic attribtues
+    
+    // TODO: Not in work. Remove it.
+    // List of semantic attribtues 
     const semanticStructure = ["searchBox",
         // -- search results --
         "searchResults",
@@ -28,6 +30,8 @@ let semanticExtractor = function () {
         "moreResults"
     ];
 
+    // Update: Instead of finding any semantics(listed above), we'll only look for parent DOMs of the list
+    let semanticParentofListElm = ["searchResults","filterOptionGroup","appliedFilterList","pageList"];
     registerEvents();
 
     // Set custom data attribute: data-semantic-name to track highlighted doms
@@ -53,11 +57,12 @@ let semanticExtractor = function () {
         if (Object.keys(element_dataset).length > 0) {
             // Object.values creates an array from the values of JSON
             dataAttrValues = Object.values(element_dataset);
+            console.log(dataAttrValues);
             // Loop through the data-attribute value array
             for (let index = 0; index < dataAttrValues.length; index++) {
                 // Check each of them if it exists in semanticStructure
                 // If exists, then we have found out thing and return
-                if (semanticStructure.includes(dataAttrValues[index])) {
+                if (semanticParentofListElm.includes(dataAttrValues[index])) {
                     return true;
                 } else {
                     continue;
