@@ -64,9 +64,9 @@ function deleteOperation(e) {
     // target brings up the element that's being clicked on the document
     var target = e.target || e.srcElement,
         text = target.textContent || target.innerText;
-
+    
     // Pass deleted element information to the sender
-    // Delete button is placed after <a> tag that has data-attr. Thats why accessing previous sibling here            
+    // Delete button is placed after <a> tag that has data-attr. Thats why accessing previous sibling here                
     updateSenderOnDeletion(target.previousSibling.getAttribute('data-semanticname'));
 
     list.removeChild(target.parentNode);
@@ -90,7 +90,7 @@ function keyboardAcessToListItem(e) {
             }
         }
         if (e.keyCode == 40) { // down
-            var selected = $(".selected");
+            let selected = $(".selected");
             $("#extension-list li").removeClass("selected");
             if (selected.next().length == 0) {
                 selected.siblings().first().addClass("selected");
@@ -101,6 +101,14 @@ function keyboardAcessToListItem(e) {
         // Enter simulates click to focus the element on the webpage2
         if (e.keyCode == 13){ // enter
             simulateClickEventOnExtensionList();
+        }
+
+        // Keyboard shortcut to remove a list item
+        if(e.keyCode == 82){ // if 'R' is pressed
+            let selected = $(".selected");
+            console.log('From Keyboard: ', $(".selected > a").attr('data-semanticname'));
+            updateSenderOnDeletion($(".selected > a").attr('data-semanticname'));
+            setTimeout($(".selected").remove(),200);                 
         }
     });
 }
